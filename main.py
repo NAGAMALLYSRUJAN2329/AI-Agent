@@ -27,11 +27,18 @@ no_of_examples = 2
 EF = 100  # EF
 K = 3  # top k number
 COSINE_THRESHOLD = 0.3  # cosine threshold
-biencoder = SentenceTransformer("BAAI/bge-large-en-v1.5", device="cpu")
-cross_encoder = CrossEncoder(
-    "cross-encoder/ms-marco-MiniLM-L-12-v2", max_length=512, device="cpu"
-)
-client = OpenAI(api_key=API_KEY, timeout=60, max_retries=2)
+
+
+@st.cache_resource
+def load_models():
+    biencoder = SentenceTransformer("BAAI/bge-large-en-v1.5", device="cpu")
+    cross_encoder = CrossEncoder(
+        "cross-encoder/ms-marco-MiniLM-L-12-v2", max_length=512, device="cpu"
+    )
+    client = OpenAI(api_key=API_KEY, timeout=60, max_retries=2)
+    return biencoder,cross_encoder,client
+
+biencoder,cross_encoder,client=load_models()
 
 # ------------------------------------------------------------------------------------------------------------------------------
 
